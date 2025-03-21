@@ -1,0 +1,123 @@
+{% extends 'layout.html' %}
+
+{% block title %}Diagnosis Results - MediDiagnose{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card diagnosis-card">
+                <div class="diagnosis-header">
+                    <h2 class="mb-0 text-center">
+                        <i class="bi bi-clipboard2-pulse me-2"></i>Diagnosis Results
+                    </h2>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Report Info -->
+                    <div class="mb-4 text-center">
+                        <span class="text-muted">Report generated on: {{ diagnosis.timestamp if diagnosis.timestamp else now().strftime('%B %d, %Y at %H:%M') }}</span>
+                    </div>
+                    
+                    <!-- Disease Prediction -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">
+                                <i class="bi bi-clipboard-check me-2"></i>Primary Assessment
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h3>{{ diagnosis.disease }}</h3>
+                                    <p class="lead">Based on your symptoms, our AI suggests this potential condition.</p>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="risk-level my-2" data-risk="{{ diagnosis.risk_level }}">
+                                        {{ diagnosis.risk_level.upper() }} RISK
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Symptoms Analysis -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4 class="mb-0">
+                                <i class="bi bi-list-check me-2"></i>Symptoms Analysis
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>Your described symptoms:</h5>
+                                    <p>{{ diagnosis.symptoms }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Identified key symptoms:</h5>
+                                    <div>
+                                        {% for symptom in diagnosis.processed_symptoms %}
+                                            <span class="symptom-badge">{{ symptom }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recommendations -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4 class="mb-0">
+                                <i class="bi bi-lightbulb me-2"></i>Recommendations
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ diagnosis.recommendation }}</p>
+                            
+                            {% if diagnosis.risk_level == 'high' %}
+                                <div class="alert alert-danger mt-3">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <strong>Urgent Action Recommended:</strong> Based on your symptoms and their severity, we strongly recommend seeking immediate medical attention.
+                                </div>
+                            {% elif diagnosis.risk_level == 'moderate' %}
+                                <div class="alert alert-warning mt-3">
+                                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                                    <strong>Medical Consultation Recommended:</strong> We suggest scheduling an appointment with a healthcare provider soon to discuss your symptoms.
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info mt-3">
+                                    <i class="bi bi-info-circle-fill me-2"></i>
+                                    <strong>Self-Care May Be Appropriate:</strong> While your symptoms appear to be low risk, monitor your condition and seek medical attention if symptoms worsen or persist.
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Disclaimer -->
+                    <div class="alert alert-secondary">
+                        <h5 class="alert-heading"><i class="bi bi-shield-exclamation me-2"></i>Medical Disclaimer</h5>
+                        <p>This AI diagnosis is for informational purposes only and is not a substitute for professional medical advice. This tool does not provide medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.</p>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="text-center mt-4">
+                        <a href="/" class="btn btn-primary me-2">
+                            <i class="bi bi-house-door me-1"></i>Return Home
+                        </a>
+                        <a href="/diagnose" class="btn btn-outline-primary me-2">
+                            <i class="bi bi-arrow-repeat me-1"></i>New Diagnosis
+                        </a>
+                        <a href="/sms-notification" class="btn btn-outline-info me-2">
+                            <i class="bi bi-envelope me-1"></i>Get SMS Alert
+                        </a>
+                        <a href="/chatbot" class="btn btn-outline-secondary">
+                            <i class="bi bi-chat-dots me-1"></i>Ask Health Assistant
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
